@@ -10,7 +10,7 @@ class Api::V1::PicturesController < ApplicationController
   end
 
   def index
-    render json: url_for(Picture.last.image)
+    render json: Picture.all.map(&:image_url)
   end
 
   private
