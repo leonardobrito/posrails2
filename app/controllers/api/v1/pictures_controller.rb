@@ -1,6 +1,7 @@
 class Api::V1::PicturesController < ApplicationController
   def create
     picture = Picture.new create_picture_params
+    picture.image.attach create_picture_params[:image]
     if picture.save
       render json: picture, status: :ok
     else
@@ -9,12 +10,12 @@ class Api::V1::PicturesController < ApplicationController
   end
 
   def index
-    render json: Picture.all
+    render json: url_for(Picture.last.image)
   end
 
   private
 
   def create_picture_params
-    params.permit(:name)
+    params.permit(:name, :image)
   end
 end
