@@ -1,4 +1,15 @@
 class Api::V1::PicturesController < ApplicationController
+
+  def show
+    picture = Picture.find_by_id update_picture_params[:id]
+
+    if picture
+      render_picture(picture, :ok)
+    else
+      render_picture_not_found
+    end
+  end
+
   def create
     picture = Picture.new create_picture_params
     picture.image.attach create_picture_params[:image] if create_picture_params[:image]
