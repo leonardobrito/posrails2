@@ -44,4 +44,32 @@ RSpec.describe Api::V1::PicturesController, type: :controller do
       expect(response.body).to eq(pictures)
     end
   end
+  describe '#create' do
+    let!(:name) { 'nome qualquer' }
+    let!(:image_name) { 'naruto.jpeg' }
+    let!(:file_path) { Rails.root.join('spec', 'support', 'assets', image_name) }
+    let!(:image) { fixture_file_upload(file_path, 'image/jpeg') }
+
+    before do
+      post :create, params: { name: name, image: image }
+    end
+    context 'When image is created' do
+      it 'returns :created' do
+        expect(response).to have_http_status(:created)
+      end
+      it 'contains field id' do
+        body = response.body
+        expect(JSON(body)['id']).to_not be_nil
+      end
+      it 'contains field name' do
+        body = response.body
+        expect(JSON(body)['name']).to eq(name)
+      end
+      it 'contains field image_url' do
+        body = response.body
+        body_image_name = JSON(body)['image_url'].split('/').last
+        expect(body_image_name).to eq(image_name)
+      end
+    end
+  end
 end
